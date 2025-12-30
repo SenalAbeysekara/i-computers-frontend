@@ -1,4 +1,4 @@
-export default function Test(){
+export default function TestPage(){
     return(
         <div className="w-[600px] h-[600px] border-4 relative">
 			<div className="w-[500px] h-[500px] bg-amber-200 flex flex-col items-center justify-center relative">
