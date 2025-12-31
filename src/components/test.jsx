@@ -9,8 +9,6 @@ export default function Test(){
     return(
 		<div className="w-full h-full bg-yellow-600 flex justify-center items-center">
 
-			
-
 			<button onClick={
 				()=>{
 					setIsVisible(!isVisible)	
