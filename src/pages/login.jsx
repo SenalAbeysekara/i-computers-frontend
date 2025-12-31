@@ -6,8 +6,13 @@ export default function LoginPage() {
 
             <div className="w-[50%] h-full flex justify-center items-end flex-col">
                 <div className="backdrop-blur-sm w-[450px] h-[600px] shadow-2xl rounded-lg flex flex-col justify-center items-center">
-                    <img src="/logo.png" className="w-[300px]" />
-				    <h1 className=" text-4xl font-bold mt-5 text-white font-poppins">SD COMPUTERS</h1>	
+                    <img src="/logo.png" className="w-[330px]" />
+				    {/* <h1 className=" text-5xl font-bold font-poppins"
+                        style={{
+                        color: 'black',                 // Text fill color
+                        WebkitTextStroke: '2px white',  // White outline
+                        textStroke: '2px white',        // For non-webkit browsers
+                    }}>SDCOMPUTERS</h1>	 */}
                 </div>   		
 			</div>
 
@@ -23,7 +28,7 @@ export default function LoginPage() {
 						placeholder="Password"
 						className="m-5 p-3 w-[90%] h-[50px] rounded-lg border border-secondary outline-none"
 					/>
-					<p className="w-full text-right pr-5 font-poppins">
+					<p className="w-full text-right pr-5 font-poppins text-sm">
 						Forgot Password?{" "}
 						<Link to="/forgot-password">
 							Reset
@@ -35,7 +40,7 @@ export default function LoginPage() {
 					<button className="m-5 p-3 w-[90%] h-[50px] bg-black rounded-lg text-white font-poppins">
 						Login with Google
 					</button>
-					<p className="w-full  text-right pr-5 font-poppins">
+					<p className="w-full  text-right pr-5 font-poppins text-sm">
 						Don't have an account?{" "}
 						<Link to="/register">
 							Register
