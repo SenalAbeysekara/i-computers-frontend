@@ -117,7 +117,7 @@ export default function AdminAddProductPage(){
                     <option value={false}>No</option>
                 </select>
             </div>
-            <div className="w-full h-[80px] bg-white sticky bottom-0 rounded-b-2xl flex justify-end items-center p-4 gap-4 ">
+            <div className="w-full h-20 bg-white sticky bottom-0 rounded-b-2xl flex justify-end items-center p-4 gap-4 ">
                 <button className="bg-gray-400 text-white font-bold px-6 py-3 rounded-[10px] hover:bg-gray-500">Cancel</button>
                 <button onClick={handleAddProduct} className="bg-accent text-white font-bold px-6 py-3 rounded-[10px] hover:bg-secondary">Add Product</button>
             </div>
