@@ -11,7 +11,7 @@ function App() {
 			<Toaster position="top-right"/>
             <Routes>
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/" element={<HomePage/>} />
+                <Route path="/*" element={<HomePage/>} />
                  {/* all-* koma awath admin ekt enawa */}
                 <Route path="/admin/*" element={< AdminPage />} />
                 <Route path="/test" element={<div><Test/></div>} />
