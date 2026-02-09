@@ -13,7 +13,7 @@ export default function HomePage(){
                 <Route path="/contact" element={<div>Contact Page Content</div>} />
                 {/* products */}
                 <Route path="/products" element={<ProductPage/>} />
-                <Route path="/overview/:productId" element={<Overview/>} />
+                <Route path="/overview/:productID" element={<Overview/>} />
                 <Route path="/*" element={<div>404 Not Found</div>} />
             </Routes>
         </div>
