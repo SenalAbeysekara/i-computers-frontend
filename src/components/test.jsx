@@ -1,36 +1,17 @@
 import { useState } from "react"
-import uploadFile from "../utils/mediaUpload"
 
-export default function Test() {
-  const [file, setFile] = useState(null)
+export default function Test(){
+	
+	const [number , setNumber] = useState(11)
 
-  async function upload() {
-    if (!file) {
-      console.log("No file selected")
-      return
-    }
+	return(
+		<div className="w-full h-full flex justify-center items-center">
+			<h1>{number}</h1>
+			<button onClick={()=>{
 
-    try {
-      const url = await uploadFile(file)
-      console.log(url)
-    } catch (err) {
-      console.error(err)
-    }
-  }
+				setNumber(number + 1)
 
-  return (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-2">
-      <input
-        type="file"
-        onChange={(e) => setFile(e.target.files[0])}
-      />
-
-      <button
-        onClick={upload}
-        className="w-[100px] h-[40px] bg-blue-500 text-white rounded-lg"
-      >
-        Upload
-      </button>
-    </div>
-  )
+			}}>Increase</button>
+		</div>	
+	)
 }

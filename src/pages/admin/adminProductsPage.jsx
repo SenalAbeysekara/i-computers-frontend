@@ -85,15 +85,22 @@ export default function AdminProductsPage() {
 					<tbody className="divide-y divide-secondary/10">
 						{products.map((item) => (
 							<tr
-								key={item.productID}
+								key={item.productId}
 								className=" even:bg-white hover:bg-primary/50 transition-colors"
 							>
 								<td className="px-5 py-4 font-medium text-secondary whitespace-nowrap">
-									{item.productID}
+									{item.productId}
 								</td>
 
-								<td td className="px-5 py-4 font-medium text-secondary whitespace-nowrap">
-									{item.name}
+								<td className="px-5 py-4">
+									<div className="flex flex-col">
+										<span className="font-semibold text-secondary">
+											{item.name}
+										</span>
+										<span className="text-xs text-secondary/60">
+											{item.category || "Uncategorized"}
+										</span>
+									</div>
 								</td>
 
 								<td className="px-5 py-4 font-semibold text-secondary whitespace-nowrap">

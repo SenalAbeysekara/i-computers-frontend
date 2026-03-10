@@ -17,7 +17,7 @@ export default function Cart(){
                                 <div key={index} className="w-[600px]  h-[150px] bg-white flex flex-row rounded-lg shadow overflow-hidden">
                                     <img className="h-[150px] aspect-square object-cover" src={cartItem.product.image} alt={cartItem.name} />
                                     <div className="h-full w-[280px] p-4 flex flex-col  overflow-hidden  justify-between">
-                                        <p className="text-xs text-gray-500">{cartItem.product.productID}</p>
+                                        <p className="text-xs text-gray-500">{cartItem.product.productId}</p>
                                         <h1 className="text-xl font-bold">{cartItem.product.name}</h1>
                                         <div className="w-[210px] h-[50px] border border-accent rounded-full flex overflow-hidden">
                                             <button onClick={

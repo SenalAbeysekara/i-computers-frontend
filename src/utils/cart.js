@@ -13,7 +13,7 @@ export function getCart() {
 const sampleCart = [
 	{
 		product: {
-			productID: "12345",
+			productId: "12345",
 			name: "Product 1",
 			labelledPrice: 1000,
 			price: 800,
@@ -23,7 +23,7 @@ const sampleCart = [
 	},
 	{
 		product: {
-			productID: "67890",
+			productId: "67890",
 			name: "Product 2",
 			labelledPrice: 2000,
 			price: 1500,
@@ -39,7 +39,7 @@ export function addToCart(product , qty){
 
     const existingProductIndex = cart.findIndex(
         (item)=>{
-            return item.product.productID == product.productID
+            return item.product.productId == product.productId
         }
     );
 
@@ -53,7 +53,7 @@ export function addToCart(product , qty){
         cart.push(
             {
                 product : {
-                    productID : product.productID,
+                    productId : product.productId,
                     name : product.name,
                     labelledPrice : product.labelledPrice,
                     price : product.price,
@@ -98,4 +98,5 @@ export function getCartTotal(cart){
     )    
     return total
 }
+
 

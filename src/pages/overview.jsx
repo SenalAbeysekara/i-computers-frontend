@@ -16,7 +16,7 @@ export default function Overview() {
 
 	useEffect(() => {
 		axios
-			.get(import.meta.env.VITE_API_URL + "/products/" + params.productID)
+			.get(import.meta.env.VITE_API_URL + "/products/" + params.productId)
 			.then((response) => {
 				setProduct(response.data);
 			});
@@ -50,8 +50,8 @@ export default function Overview() {
 								<span>{product.model || ""}</span>
 							</p>
 						}
-						{/* productID */}
-						<p className="text-sm text-gray-500 mb-4">{product.productID}</p>
+						{/* productId */}
+						<p className="text-sm text-gray-500 mb-4">{product.productId}</p>
 
 						
 						{/* price */}

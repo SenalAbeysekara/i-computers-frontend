@@ -7,7 +7,7 @@ import uploadFile from "../../utils/mediaUpload";
 export default function AdminUpdateProductPage(){
     
     const location = useLocation()
-    const [productID , setProductID] = useState(location.state.productID);
+    const [productId , setProductId] = useState(location.state.productId);
     const [name , setName] = useState(location.state.name);
     const [description , setDescription] = useState(location.state.description);
     const [altNames , setAltNames] = useState(location.state.altNames.join(","));
@@ -47,7 +47,7 @@ export default function AdminUpdateProductPage(){
                 imageURLs = location.state.images
             }
 
-            await axios.put( import.meta.env.VITE_API_URL + "/products/"+productID,{
+            await axios.put( import.meta.env.VITE_API_URL + "/products/"+productId,{
                 name: name,
                 description: description,
                 price : price,
@@ -77,7 +77,7 @@ export default function AdminUpdateProductPage(){
             <h1 className="w-full text-3xl font-bold mb-4 sticky top-0 bg-primary">Edit Product</h1>
             <div className="w-[50%]   h-[120px] flex flex-col">
                 <label className="font-bold ml-2">Product ID</label>
-                <input value={productID} disabled onChange={(e)=>{setProductID(e.target.value)}}  placeholder="Ex: ID001" className="border-4 border-accent rounded-[10px] h-[50px] p-2 m-2 focus:outline-white"/>
+                <input value={productId} disabled onChange={(e)=>{setProductId(e.target.value)}}  placeholder="Ex: ID001" className="border-4 border-accent rounded-[10px] h-[50px] p-2 m-2 focus:outline-white"/>
             </div>
             <div className="w-[50%]  h-[120px] flex flex-col">
                 <label className="font-bold ml-2">Product Name</label>

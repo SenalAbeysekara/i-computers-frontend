@@ -6,10 +6,6 @@
     --color-accent: #02a9f7;
 }
 
-.font-poppins {
-  font-family: 'Poppins', sans-serif;
-}
-
 /* transparent scroll track class called hide-scroll-track */
 .hide-scroll-track::-webkit-scrollbar {
     width: 8px;               /* width of the entire scrollbar */

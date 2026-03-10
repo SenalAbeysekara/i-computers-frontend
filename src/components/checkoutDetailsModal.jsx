@@ -36,7 +36,7 @@ export default function CheckOutDetailsModal(props) {
 		};
 		cart.forEach((item) => {
 			order.items.push({
-				productID: item.product.productID,
+				productId: item.product.productId,
 				qty: item.qty,
 			});
 		});

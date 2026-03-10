@@ -15,14 +15,14 @@ export default function DeleteModal(props){
            {
             isVisible && (
                 <div className="fixed z-100 bg-black/50 w-screen h-screen top-0 left-0 flex justify-center items-center">
-                    <div className="w-[400px] bg-white h-[200px] relative rounded-sm">
-                        <button onClick={()=>{setIsVisible(false)}} className="w-[40px] h-[40px]  text-red-600 absolute right-0 text-sm font-bold hover:bg-red-600 hover:text-white cursor-pointer rounded-sm" >
+                    <div className="w-[400px] bg-white h-[200px] relative">
+                        <button onClick={()=>{setIsVisible(false)}} className="w-[40px] h-[40px]  text-red-600 absolute right-0 text-sm font-bold hover:bg-red-600 hover:text-white cursor-pointer" >
                             X
                         </button>
                         <h1 className="text-lg font-semibold text-center mt-10">Are you sure you want to delete the product with product id {product.productId}?</h1>
                         <div className="flex text-sm justify-center items-center gap-5 mt-10">
                             <button
-                                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 "
+                                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
                                 onClick={
                                     ()=>{
                                         const token = localStorage.getItem("token");
