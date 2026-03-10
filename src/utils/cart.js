@@ -10,7 +10,7 @@ export function getCart() {
 	}
 }
 
-const sampleCart = `[
+const sampleCart = [
 	{
 		product: {
 			productID: "12345",
@@ -19,7 +19,7 @@ const sampleCart = `[
 			price: 800,
 			image: "https://via.placeholder.com/150",
 		},
-		qty: -1,
+		qty: 1,
 	},
 	{
 		product: {
@@ -31,7 +31,7 @@ const sampleCart = `[
 		},
 		qty: 1,
 	},
-];`
+];
 
 export function addToCart(product , qty){
     
@@ -85,3 +85,17 @@ export function addToCart(product , qty){
     localStorage.setItem("cart", cartString);
 
 }
+
+export function getCartTotal(cart){
+    
+    let total = 0 
+
+    cart.forEach(
+        (cartItem)=>{
+                //total = total + cartItem.product.price * cartItem.qty
+                total += cartItem.product.price * cartItem.qty
+        }
+    )    
+    return total
+}
+
