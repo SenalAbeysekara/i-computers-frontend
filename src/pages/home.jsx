@@ -2,18 +2,20 @@ import { Route, Routes } from "react-router-dom";
 import Header from "../components/header";
 import ProductPage from "./productPage";
 import Overview from "./overview";
+import Cart from "./cart";
 
-export default function HomePage(){
-    return(
+export default function HomePage() {
+    return (
         <div className="w-full min-h-screen">
-            <Header/>
+            <Header />
             <Routes>
                 <Route path="/" element={<div>Home Page Content</div>} />
                 <Route path="/about" element={<div>About Page Content</div>} />
                 <Route path="/contact" element={<div>Contact Page Content</div>} />
                 {/* products */}
-                <Route path="/products" element={<ProductPage/>} />
-                <Route path="/overview/:productID" element={<Overview/>} />
+                <Route path="/products" element={<ProductPage />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/overview/:productID" element={<Overview />} />
                 <Route path="/*" element={<div>404 Not Found</div>} />
             </Routes>
         </div>
