@@ -5,6 +5,7 @@ import getFormattedPrice from "../utils/price-format"
 import { useLocation, useNavigate } from "react-router-dom";
 import CheckOutDetailsModal from "../components/checkoutDetailsModal";
 
+
 export default function Checkout(){
     const location = useLocation();
     const [cart , setCart] = useState(location.state || [])
@@ -14,8 +15,8 @@ export default function Checkout(){
     if(location.state == null){
         navigate("/products")
     }
+    
 
-   
 
     return(
         <div className="w-full h-[calc(100vh-100px)] overflow-y-scroll ">
