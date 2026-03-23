@@ -8,7 +8,7 @@ import MyOrdersPage from "./myOrdersPage";
 import SettingsPage from "./settings"
 export default function HomePage(){
     return(
-        <div className="w-full min-h-screen">
+        <div className="w-full h-screen overflow-y-scroll ">
             <Header/>
             <Routes>
                 <Route path="/" element={<div>Home Page Content</div>} />

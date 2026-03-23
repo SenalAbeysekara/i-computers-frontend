@@ -98,7 +98,7 @@ export default function CheckOutDetailsModal(props) {
 				Buy now
 			</button>
 			{isVisible && (
-				<div className="w-full h-full bg-black/50 fixed z-50 top-0 left-0 flex justify-center items-center">
+				<div className="w-full min-h-full pt-[100px] bg-black/50 fixed top-0 left-0 flex justify-center items-center z-50">
 					<div className="w-[400px] h-auto bg-white rounded-lg p-5 relative">
 						<button
 							onClick={() => {

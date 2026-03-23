@@ -23,15 +23,26 @@ export default function Overview() {
 	}, []);
 
 	return (
-		<div className="w-full h-[calc(100vh-100px)] flex justify-center items-center ">
+		<div className="w-full lg:h-[calc(100vh-100px)] flex justify-center items-center s">
 			{
                 product==null?<LoadingAnimation/>:
-                <div className="w-full h-full  flex">
-                    <div className="w-[50%] h-full  flex justify-center items-center">
+                <div className="w-full  flex flex-col lg:flex-row bg-primary ">
+					<h1 className="text-3xl font-bold mb-4 p-4 lg:hidden">{product.name}
+							
+								{
+									product.altNames.map((altName , index)=>{
+										return(
+											<span key={index} className=" text-gray-500 font-medium"> | {altName} </span>
+										)
+									})
+								}
+							
+						</h1>
+                    <div className="w-full p-4 lg:p-0 lg:w-[50%]  lg:h-full  flex justify-center items-center">
                         <ImageSlideShow images={product.images}/>
                     </div>
-                    <div className="w-[50%] h-full p-5 flex justify-center flex-col">
-						<h1 className="text-3xl font-bold mb-4">{product.name}
+                    <div className="lg:w-[50%] h-full p-5 flex justify-center flex-col">
+						<h1 className="text-3xl hidden lg:block font-bold mb-4">{product.name}
 							
 								{
 									product.altNames.map((altName , index)=>{
