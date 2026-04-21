@@ -27,7 +27,7 @@ export default function LoginPage() {
 					}
 				)
 			},
-			onError: (error)=>{
+			onError: ()=>{
 				toast.error("Google login failed. Please try again.")
 			}
 		}
