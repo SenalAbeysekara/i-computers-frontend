@@ -100,11 +100,11 @@ export default function AdminAddProductPage() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 pb-6">
-      <PageHeader
-        title="Create a new product"
-        subtitle="Add product details, pricing, images, and storefront visibility with a cleaner admin experience."
-      />
-
+      <div>
+        <p className="text-xs uppercase tracking-[0.3em] text-secondary/40">
+          Admin / Add Product 
+        </p>
+      </div>
       <div className="grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">
         <div className="rounded-[32px] border border-white/10 bg-gradient-to-br from-[#111d33] via-[#0f192d] to-[#0b1424] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.18)] md:p-8">
           <div className="mb-6">

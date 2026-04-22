@@ -55,9 +55,6 @@ export default function AdminUsersPage() {
             <h2 className="text-xl font-semibold text-white md:text-2xl">
               User Management
             </h2>
-            <p className="mt-1 text-sm text-secondary/60">
-              Control access, block misuse, and promote users to admin.
-            </p>
           </div>
 
           <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-secondary/70">

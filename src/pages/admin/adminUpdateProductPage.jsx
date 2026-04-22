@@ -121,12 +121,6 @@ export default function AdminUpdateProductPage() {
         <p className="text-xs uppercase tracking-[0.3em] text-secondary/40">
           Admin / Product Editor
         </p>
-        <h1 className="mt-2 text-3xl font-semibold text-white md:text-4xl">
-          Upgrade product details
-        </h1>
-        <p className="mt-2 max-w-3xl text-secondary/65">
-          Refresh product content, pricing, images, and storefront visibility with a cleaner editing experience.
-        </p>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">

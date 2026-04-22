@@ -65,9 +65,6 @@ export default function AdminOrdersPage() {
             <h2 className="text-xl font-semibold text-white md:text-2xl">
               Order Management
             </h2>
-            <p className="mt-1 text-sm text-secondary/60">
-              Review orders, customer details, and update statuses quickly.
-            </p>
           </div>
 
           <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-secondary/70">

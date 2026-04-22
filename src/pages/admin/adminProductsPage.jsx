@@ -67,11 +67,8 @@ export default function AdminProductsPage() {
         <div className="flex flex-col gap-4 px-5 py-5 md:flex-row md:items-center md:justify-between md:px-6">
           <div>
             <h2 className="text-xl font-semibold text-white md:text-2xl">
-              Product Catalog
+              Product Management
             </h2>
-            <p className="mt-1 text-sm text-secondary/60">
-              Manage products, pricing, visibility, and quick actions.
-            </p>
           </div>
 
           <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-secondary/70">
