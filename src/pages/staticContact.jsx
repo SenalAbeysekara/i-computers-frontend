@@ -44,11 +44,6 @@ export default function ContactPage() {
 
           <div className="rounded-[36px] border border-white/10 bg-gradient-to-br from-accent/15 to-white/5 p-8 md:p-10">
             <h2 className="text-2xl font-black">Quick message</h2>
-            <p className="mt-2 text-secondary/65">
-              This section can later be connected to email, WhatsApp, or a
-              contact form backend.
-            </p>
-
             <div className="mt-6 space-y-4">
               <input
                 placeholder="Your Name"

@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   PackageSearch,
   UserSquare2,
+  MessageSquareMore,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import AdminProductsPage from "./admin/adminProductsPage";
@@ -17,6 +18,7 @@ import AdminAddProductPage from "./admin/adminAddProductPage";
 import AdminUpdateProductPage from "./admin/adminUpdateProductPage";
 import AdminOrdersPage from "./admin/adminOrdersPage";
 import AdminUsersPage from "./admin/adminUsersPage";
+import AdminReviewsPage from "./admin/adminReviewsPage";
 
 const navItems = [
   {
@@ -30,6 +32,12 @@ const navItems = [
     label: "Products",
     icon: ShoppingBag,
     hint: "Manage Products",
+  },
+  {
+    to: "/admin/reviews",
+    label: "Reviews",
+    icon: MessageSquareMore,
+    hint: "Manage Reviews",
   },
   {
     to: "/admin/users",
@@ -69,6 +77,15 @@ export default function AdminPage() {
         tileTitle: "Product Center",
         tileDesc: "Manage Products, Stock Visibility, and Pricing",
         tileIcon: ShoppingBag,
+      };
+    }
+
+    if (location.pathname.includes("/admin/reviews")) {
+      return {
+        title: "Reviews",
+        tileTitle: "Review Center",
+        tileDesc: "See and moderate product reviews from all products",
+        tileIcon: MessageSquareMore,
       };
     }
 
@@ -249,6 +266,7 @@ export default function AdminPage() {
             <Routes>
               <Route path="/" element={<AdminOrdersPage />} />
               <Route path="/products" element={<AdminProductsPage />} />
+              <Route path="/reviews" element={<AdminReviewsPage />} />
               <Route path="/users" element={<AdminUsersPage />} />
               <Route path="/add-product" element={<AdminAddProductPage />} />
               <Route path="/update-product" element={<AdminUpdateProductPage />} />
