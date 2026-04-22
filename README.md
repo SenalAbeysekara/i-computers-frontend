@@ -60,6 +60,35 @@ Built with **React + Vite**, this frontend includes authentication, product brow
 
 ---
 
+# Installation
+
+To set up the project locally, follow these steps:
+
+## Frontend Setup🪃
+### Clone the Repository
+
+```bash
+git clone https://github.com/SenalAbeysekara/i-computers-frontend.git
+cd i-computers-frontend
+```
+
+### Install dependencies
+```bash
+npm install
+```
+
+### Start development server
+```bash
+npm run dev
+```
+### Set up Environment Variables
+Create a .env file in the root of the i-computers-frontend directory and configure the necessary environment variables <br>
+```bash
+VITE_API_URL
+VITE_SUPABASE_URL
+VITE_SUPABASE_KEY
+```
+
 ## 📁 Project Structure
 
 ```bash
@@ -76,3 +105,6 @@ i-computers-frontend
 │
 ├── package.json
 └── vite.config.js
+```
+### License
+MIT License
