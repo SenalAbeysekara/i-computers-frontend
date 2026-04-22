@@ -1,55 +1,173 @@
-import { BiShoppingBag } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Menu, ShoppingCart, X, Search, ShieldCheck } from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
 import UserData from "./userData";
-import { useState } from "react";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { LuPanelLeftClose } from "react-icons/lu";
+import { useEffect, useState } from "react";
+import { getCart } from "../utils/cart";
+
+const navLinks = [
+  { to: "/", label: "Home" },
+  { to: "/products", label: "Products" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
+];
 
 export default function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
-	const [isOpen , setIsOpen] = useState(false)
+  useEffect(() => {
+    function updateCartCount() {
+      const cart = getCart();
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      setCartCount(count);
+    }
 
-	return (
-		<header className="w-full sticky top-0 bg-accent h-[100px] z-1 flex justify-center items-center ">
-			
-			<div className="h-full w-full lg:w-auto flex justify-center items-center absolute lg:left-10 ">
-				<GiHamburgerMenu onClick={()=>{setIsOpen(true)}} size={30} color="white" className="mr-8 lg:hidden cursor-pointer"/>
-				<img src="/logo.png" alt="Logo" className="h-[30px] lg:h-[50px]" />
-				<h1 className="text-white text-md lg:text-2xl font-bold ml-2">Isuri Computers</h1>
-			</div>
-            <div className=" h-full  lg:flex justify-center items-center hidden">
-                <Link to="/" className="text-white mx-4 hover:border-b-2">Home</Link>
-                <Link to="/products" className="text-white mx-4 hover:border-b-2">Products</Link>
-                <Link to="/about" className="text-white mx-4 hover:border-b-2">About</Link>
-                <Link to="/contact" className="text-white mx-4 hover:border-b-2">Contact</Link>                
+    updateCartCount();
+
+    window.addEventListener("cartUpdated", updateCartCount);
+    window.addEventListener("storage", updateCartCount);
+
+    return () => {
+      window.removeEventListener("cartUpdated", updateCartCount);
+      window.removeEventListener("storage", updateCartCount);
+    };
+  }, []);
+
+  const linkClasses = ({ isActive }) =>
+    `relative rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
+      isActive
+        ? "bg-white/10 text-white shadow-[0_0_0_1px_rgba(59,130,246,0.25)]"
+        : "text-secondary/75 hover:-translate-y-0.5 hover:bg-white/8 hover:text-white hover:shadow-[0_8px_24px_rgba(59,130,246,0.12)]"
+    }`;
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-primary/85 backdrop-blur-xl">
+      <div className="section-shell flex h-[84px] items-center justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-4">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="shrink-0 rounded-xl border border-white/10 p-2 text-secondary/80 transition-all duration-300 hover:bg-white/8 hover:text-white lg:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
+          <Link to="/" className="flex min-w-0 items-center gap-3">
+            <div className="flex flex-col items-start justify-center leading-tight">
+              <img
+                src="/logo.png"
+                alt="Isuri Computer"
+                className="h-9 w-auto object-contain md:h-10 lg:h-10"
+              />
+              <p className="mt-0.5 flex items-center gap-1.5 pl-0.5 text-[12px] font-medium text-secondary/60">
+                <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-accent" />
+                Premium computer store
+              </p>
             </div>
-			<div className=" absolute right-10 hidden lg:flex h-full justify-center items-center gap-5">
-				<Link to="/cart" className=" cursor-pointer"><BiShoppingBag size={30} color="white" /></Link>
-				<UserData/>
-			</div>
+          </Link>
+        </div>
 
-			{isOpen&&<div className="fixed bg-black/50 w-full h-screen top-0 left-0">
-				<div className="w-[300px]  h-full bg-white">
-					<div className="h-[100px] bg-accent w-full flex justify-start items-center px-5">
-						<img src="/logo.png" alt="Logo" className="h-[30px] lg:h-[50px]" />
-						<h1 className="text-white text-md lg:text-2xl font-bold ml-2">Isuri Computers</h1>
-						<LuPanelLeftClose onClick={()=>{setIsOpen(false)}} size={30} color="white" className="ml-auto cursor-pointer"/>
-					</div>
-					<div className="flex flex-col mt-5">
-						<a href="/" className="text-secondary text-lg font-semibold py-3 px-5 hover:bg-secondary/10">Home</a>
-						<a href="/products" className="text-secondary text-lg font-semibold py-3 px-5 hover:bg-secondary/10">Products</a>
-						<a href="/about" className="text-secondary text-lg font-semibold py-3 px-5 hover:bg-secondary/10">About</a>
-						<a href="/contact" className="text-secondary text-lg font-semibold py-3 px-5 hover:bg-secondary/10">Contact</a>
-						<a href="/cart" className="text-secondary text-lg font-semibold py-3 px-5 hover:bg-secondary/10">Cart</a>
-						<div className="border-t border-secondary/20 my-5 bg-accent absolute bottom-0 w-[300px]">
-							<UserData/>
-						</div>
+        <nav className="hidden items-center gap-3 lg:flex">
+          {navLinks.map((item) => (
+            <NavLink key={item.to} to={item.to} className={linkClasses}>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
 
-						
-					</div>
-				</div>
-			</div>}
+        <div className="flex shrink-0 items-center gap-2 md:gap-3">
+          <Link
+            to="/products"
+            className="hidden items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-secondary/75 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/8 hover:text-white hover:shadow-[0_8px_24px_rgba(59,130,246,0.12)] md:flex"
+          >
+            <Search className="h-4 w-4" />
+            Browse
+          </Link>
 
-		</header>
-	);
+          <Link
+            to="/cart"
+            className="relative rounded-full border border-white/12 p-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/8 hover:text-white hover:shadow-[0_8px_24px_rgba(59,130,246,0.12)]"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {cartCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[11px] font-bold text-white shadow-lg shadow-blue-500/30">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+
+          <UserData />
+        </div>
+      </div>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            className="glass h-full w-[300px] p-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-8 flex items-start justify-between">
+              <div className="flex flex-col items-start">
+                <img
+                  src="/logo.png"
+                  alt="Isuri Computer"
+                  className="h-10 w-auto object-contain"
+                />
+                <p className="mt-1 flex items-center gap-1.5 text-[12px] font-medium text-secondary/65">
+                  <ShieldCheck className="h-3.5 w-3.5 text-accent" />
+                  Premium computer store
+                </p>
+              </div>
+
+              <button
+                onClick={() => setIsOpen(false)}
+                className="rounded-xl border border-white/10 p-2 transition-all duration-300 hover:bg-white/8 hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {navLinks.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setIsOpen(false)}
+                  className="block rounded-2xl bg-white/5 px-4 py-3 transition-all duration-300 hover:bg-white/10 hover:text-accent hover:translate-x-1"
+                >
+                  {item.label}
+                </Link>
+              ))}
+
+              <Link
+                to="/cart"
+                onClick={() => setIsOpen(false)}
+                className="block rounded-2xl bg-white/5 px-4 py-3 transition-all duration-300 hover:bg-white/10 hover:text-accent hover:translate-x-1"
+              >
+                Cart
+              </Link>
+
+              <Link
+                to="/privacy-policy"
+                onClick={() => setIsOpen(false)}
+                className="block rounded-2xl bg-white/5 px-4 py-3 transition-all duration-300 hover:bg-white/10 hover:text-accent hover:translate-x-1"
+              >
+                Privacy Policy
+              </Link>
+
+              <Link
+                to="/terms-and-conditions"
+                onClick={() => setIsOpen(false)}
+                className="block rounded-2xl bg-white/5 px-4 py-3 transition-all duration-300 hover:bg-white/10 hover:text-accent hover:translate-x-1"
+              >
+                Terms & Conditions
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  );
 }

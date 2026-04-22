@@ -2,26 +2,24 @@ import { Route, Routes } from "react-router-dom";
 import AdminPage from "./pages/admin";
 import HomePage from "./pages/home";
 import LoginPage from "./pages/login";
-import Test from "./components/test";
 import { Toaster } from "react-hot-toast";
 import RegisterPage from "./pages/register";
 import ForgetPassword from "./pages/forgetPassword";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export default function App() {
-	return (
-		<GoogleOAuthProvider clientId="849803101955-lgad0e8n0d9oggb6ouj6olvpo54ot2tr.apps.googleusercontent.com">
-			<div className="w-full h-screen bg-primary text-secondary">
-				<Toaster position="top-right"/>
-				<Routes>
-					<Route path="/*" element={<HomePage />} />
-					<Route path="/admin/*" element={<AdminPage/>}/>
-					<Route path="/login" element={<LoginPage />} />
-					<Route path="/register" element={<RegisterPage />} />
-					<Route path="/forgot-password" element={<ForgetPassword />} />
-					<Route path="/test" element={<Test/>} />
-				</Routes>
-			</div>
-		</GoogleOAuthProvider>
-	);
+  return (
+    <GoogleOAuthProvider clientId="849803101955-lgad0e8n0d9oggb6ouj6olvpo54ot2tr.apps.googleusercontent.com">
+      <div className="min-h-screen bg-primary text-secondary">
+        <Toaster position="top-right" />
+        <Routes>
+          <Route path="/*" element={<HomePage />} />
+          <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgetPassword />} />
+        </Routes>
+      </div>
+    </GoogleOAuthProvider>
+  );
 }

@@ -1,38 +1,43 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-export default function ImageSlideShow(props) {
-	const images = props.images;
-	const [activeImage, setActiveImage] = useState(0);
+export default function ImageSlideShow({ images = [] }) {
+  const safeImages = useMemo(
+    () => (images.length ? images : ["/logo.png"]),
+    [images]
+  );
+  const [activeImage, setActiveImage] = useState(0);
 
-    function getClass(index){
-        if(index == activeImage){
-            return "h-[90px] w-[90px] rounded-[20px] shadow-md cursor-pointer border-4 border-blue-500"
-        }else{
-            return "h-[90px] w-[90px] rounded-[20px] shadow-md cursor-pointer"
-        }        
-    }
+  return (
+    <div className="w-full">
+      <div className="rounded-[28px] border border-white/10 bg-[#101a2d] p-4">
+        <div className="flex h-[380px] items-center justify-center overflow-hidden rounded-[24px] bg-white p-6 md:h-[500px]">
+          <img
+            src={safeImages[activeImage]}
+            alt="Product"
+            className="max-h-full max-w-full object-contain"
+          />
+        </div>
 
-	return (
-		<div className="w-[500px] h-[600px]  flex flex-col">
-			<img
-				src={images[activeImage]}
-				className="h-[500px] w-full object-cover"
-			/>
-			<div className="w-full h-[100px] flex flex-row px-4 gap-4  justify-center items-center">
-				{images.map((img, index) => {
-					return (
-						<img
-							onClick={() => {
-								setActiveImage(index);
-							}}
-							key={index}
-							src={img}
-							//className={"h-[90px] w-[90px]"}
-                            className={getClass(index)}
-						/>
-					);
-				})}
-			</div>
-		</div>
-	);
+        <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
+          {safeImages.map((img, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveImage(index)}
+              className={`flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 bg-white p-2 transition ${
+                index === activeImage
+                  ? "border-accent shadow-[0_0_0_2px_rgba(59,130,246,0.15)]"
+                  : "border-white/10 hover:border-white/25"
+              }`}
+            >
+              <img
+                src={img}
+                alt={`Preview ${index + 1}`}
+                className="h-full w-full object-contain"
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

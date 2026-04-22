@@ -1,141 +1,153 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-
 import toast from "react-hot-toast";
-import CustomerViewOrderInfoModal from "../components/customersViewOrderInfoModal";
+import LoadingAnimation from "../components/loadingAnimation";
 import getFormattedDate from "../utils/date-format";
 import getFormattedPrice from "../utils/price-format";
-import LoadingAnimation from "../components/loadingAnimation";
+import CustomerViewOrderInfoModal from "../components/customersViewOrderInfoModal";
 
 export default function MyOrdersPage() {
-	const [orders, setOrders] = useState([]);
-	const [pageNumber, setPageNumber] = useState(1);
-	const [pageSize, setPageSize] = useState(10);
-	const [totalPages, setTotalPages] = useState(0);
-	const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const pageSize = 10;
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		if (loading) {
-			const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (!loading) return;
 
-			axios
-				.get(
-					import.meta.env.VITE_API_URL +
-						"/orders/" +
-						pageSize +
-						"/" +
-						pageNumber,
-					{
-						headers: {
-							Authorization: "Bearer " + token,
-						},
-					},
-				)
-				.then((response) => {
-					setOrders(response.data.orders);
-					setTotalPages(response.data.totalPages);
-					setLoading(false);
-				});
-		}
-	}, [loading]);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
 
-	return (
-		<div className="w-full h-full overflow-y-scroll relative ">
-			
-			{ loading ? (
-				<div className="w-full h-full flex justify-center items-center">
-					<LoadingAnimation />
-				</div>
-			) : (
-				<table className="min-w-[1100px] w-full text-sm relative">
-                    <thead className="sticky top-0 z-10 bg-white">
-						<tr className="border-b border-secondary/10">
-							<th className="px-5 py-3  text-center text-xs font-semibold uppercase tracking-wide text-secondary/70">
-								Order ID
-							</th>
-							<th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-tight text-secondary/70">
-								Customer Name
-							</th>
-							<th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-secondary/70">
-								Email
-							</th>
-							<th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-secondary/70">
-								Date
-							</th>
-							<th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-secondary/70">
-                                Total Amount
-							</th>
-                            <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide text-secondary/70">
-                                Status
-                            </th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-                    <tbody>
-                        {orders.map((order) => (
-                            <tr key={order.id} className="border-b border-secondary/10">
-                                <td className="px-5 py-3 text-center">{order.orderId}</td>
-                                <td className="px-5 py-3 text-center">{order.firstName + " "+order.lastName}</td>
-                                <td className="px-5 py-3 text-center">{order.email}</td>
-                                <td className="px-5 py-3 text-center">{getFormattedDate(order.date)}</td>
-                                <td className="px-5 py-3 text-center">{getFormattedPrice(order.total)}</td>
-                                <td className="px-5 py-3 text-center">{order.status}</td>
-                                <td className="px-5 py-3 text-center">
-                                    <CustomerViewOrderInfoModal order={order}/>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-			)}
-            <div className="w-full fixed bottom-0 left-0 h-[50px] flex justify-center items-center ">
-                <div className="w-[500px] h-full bg-white shadow-2xl rounded-full flex items-center justify-center px-2">
-                    <button className="bg-accent w-[100px] text-white p-2 rounded-full cursor-pointer hover:bg-accent/80"
-                        onClick={() => {
-                            if(pageNumber > 1){
-                                setPageNumber(pageNumber - 1);
-                                setLoading(true);
-                            }else{
-                                toast.success("You are on the first page");
-                            }
-                        }}
-                    >
-                        Previous
-                    </button>
-                    <span className="text-sm text-secondary w-[100px] text-center">
-                        Page {pageNumber} of {totalPages}
-                    </span>
-                    <button className="bg-accent text-white p-2 rounded-full w-[100px] cursor-pointer hover:bg-accent/80"
-                        onClick={
-                            ()=>{
-                                if(pageNumber < totalPages){
-                                    setPageNumber(pageNumber + 1);
-                                    setLoading(true);
-                                }else{
-                                    toast.success("You are on the last page");
-                                }
-                            }
-                        }
-                        >
-                        Next
-                    </button>
+    axios
+      .get(import.meta.env.VITE_API_URL + "/orders/" + pageSize + "/" + pageNumber, {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((response) => {
+        setOrders(response.data.orders || []);
+        setTotalPages(response.data.totalPages || 0);
+      })
+      .catch((err) =>
+        toast.error(err?.response?.data?.message || "Failed to load orders")
+      )
+      .finally(() => setLoading(false));
+  }, [loading, pageNumber]);
 
-                    <select
-                        value={pageSize}
-                        onChange={(e) => {
-                            setPageSize(parseInt(e.target.value));
-                            setLoading(true);
-                        }}
-                        className="ml-5 border border-secondary/20 rounded px-3 py-2 text-sm"
-                    >
-                        {/* <option value={2}>2 per page</option>
-                        <option value={5}>5 per page</option> */}
-                        <option value={10}>10 per page</option>
-                        <option value={20}>20 per page</option>
-                        <option value={50}>50 per page</option>
-                    </select>
+  return (
+    <div className="section-shell py-10">
+      <div className="mb-8">
+        <h1 className="text-4xl font-black">My Orders</h1>
+        <p className="mt-2 text-secondary/65">
+          Track past purchases and order details from your account.
+        </p>
+      </div>
+
+      {loading ? (
+        <LoadingAnimation />
+      ) : orders.length === 0 ? (
+        <div className="rounded-[28px] border border-white/10 bg-white/5 p-10 text-center text-secondary/60">
+          No orders found.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {orders.map((order) => (
+            <div
+              key={order.orderId}
+              className="rounded-[30px] border border-white/10 bg-gradient-to-br from-[#131f35] via-[#111b2f] to-[#0c1526] p-5 shadow-xl shadow-black/10"
+            >
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <div className="grid flex-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                  <SimpleInfo label="Order ID" value={order.orderId} />
+                  <SimpleInfo label="Date" value={getFormattedDate(order.date)} />
+                  <SimpleInfo
+                    label="Status"
+                    value={
+                      <span className={getStatusClass(order.status)}>
+                        {order.status || "Pending"}
+                      </span>
+                    }
+                  />
+                  <SimpleInfo
+                    label="Items"
+                    value={`${order.items?.length || 0} items`}
+                  />
+                  <SimpleInfo label="Total" value={getFormattedPrice(order.total)} />
                 </div>
+
+                <div className="flex justify-end">
+                  <CustomerViewOrderInfoModal order={order} />
+                </div>
+              </div>
             </div>
-		</div>
-	);
+          ))}
+        </div>
+      )}
+
+      <div className="mt-8 flex items-center justify-center gap-4">
+        <button
+          onClick={() => {
+            if (pageNumber > 1) {
+              setPageNumber((value) => value - 1);
+              setLoading(true);
+            } else {
+              toast("You are on the first page");
+            }
+          }}
+          className="rounded-full border border-white/10 bg-white/5 px-5 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/10"
+        >
+          Previous
+        </button>
+
+        <span className="text-secondary/65">
+          Page {pageNumber} of {Math.max(totalPages, 1)}
+        </span>
+
+        <button
+          onClick={() => {
+            if (pageNumber < totalPages) {
+              setPageNumber((value) => value + 1);
+              setLoading(true);
+            } else {
+              toast("You are on the last page");
+            }
+          }}
+          className="rounded-full border border-white/10 bg-white/5 px-5 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/10"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SimpleInfo({ label, value }) {
+  return (
+    <div>
+      <p className="mb-2 text-[11px] uppercase tracking-[0.2em] text-secondary/45">
+        {label}
+      </p>
+      <div className="text-xl font-semibold text-white">{value}</div>
+    </div>
+  );
+}
+
+function getStatusClass(status) {
+  const value = String(status || "").toLowerCase();
+
+  if (value === "completed" || value === "delivered") {
+    return "rounded-full bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-300";
+  }
+
+  if (value === "cancelled") {
+    return "rounded-full bg-red-500/15 px-3 py-1 text-sm font-medium text-red-300";
+  }
+
+  if (value === "processing") {
+    return "rounded-full bg-blue-500/15 px-3 py-1 text-sm font-medium text-blue-300";
+  }
+
+  return "rounded-full bg-amber-500/15 px-3 py-1 text-sm font-medium text-amber-300";
 }

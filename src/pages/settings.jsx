@@ -4,156 +4,167 @@ import uploadFile from "../utils/mediaUpload";
 import toast from "react-hot-toast";
 
 export default function SettingsPage() {
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [existingImageUrl, setExistingImageUrl] = useState("");
-	const [file, setFile] = useState(null);
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [existingImageUrl, setExistingImageUrl] = useState("");
+  const [file, setFile] = useState(null);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-	useEffect(() => {
-		const token = localStorage.getItem("token");
-		if (token != null) {
-			axios
-				.get(import.meta.env.VITE_API_URL + "/users/profile", {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				})
-				.then((response) => {
-					console.log(response.data);
-					setFirstName(response.data.firstName);
-					setLastName(response.data.lastName);
-					setExistingImageUrl(response.data.image);
-				})
-				.catch(() => {
-					localStorage.removeItem("token");
-					window.location.href = "/login";
-				});
-		} else {
-			window.location.href = "/login";
-		}
-	}, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
 
-	async function updateProfile() {
-		const token = localStorage.getItem("token");
+    axios
+      .get(import.meta.env.VITE_API_URL + "/users/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setFirstName(response.data.firstName || "");
+        setLastName(response.data.lastName || "");
+        setExistingImageUrl(response.data.image || "");
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      });
+  }, []);
 
-		const updatedInfo = {
-			firstName: firstName,
-			lastName: lastName,
-			image: existingImageUrl,
-		};
+  async function updateProfile() {
+    try {
+      const token = localStorage.getItem("token");
+      const updatedInfo = { firstName, lastName, image: existingImageUrl };
+      if (file) updatedInfo.image = await uploadFile(file);
 
-		if (file != null) {
-			updatedInfo.image = await uploadFile(file);
-		}
-		const response = await axios.put(
-			import.meta.env.VITE_API_URL + "/users/",
-			updatedInfo,
-			{
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			}
-		);
+      const response = await axios.put(
+        import.meta.env.VITE_API_URL + "/users/",
+        updatedInfo,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-		localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response.data.token);
+      toast.success("Profile updated successfully");
+      window.location.reload();
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to update profile");
+    }
+  }
 
-		toast.success("Profile updated successfully");
-		window.location.reload();
-	}
+  async function changePassword() {
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
 
-	async function changePassword() {
-		if (password != confirmPassword) {
-			toast.error("Passwords do not match");
-			return;
-		}
-		const token = localStorage.getItem("token");
-		await axios.post(
-			import.meta.env.VITE_API_URL + "/users/update-password",
-			{
-				password: password,
-			},
-			{
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			}
-		);
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        import.meta.env.VITE_API_URL + "/users/update-password",
+        { password },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      toast.success("Password changed successfully");
+      window.location.reload();
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to change password");
+    }
+  }
 
-		toast.success("Password changed successfully");
+  return (
+    <div className="section-shell py-10">
+      <div className="grid gap-8 xl:grid-cols-2">
+        <div className="rounded-[32px] glass p-6 md:p-8">
+          <p className="text-sm uppercase tracking-[0.25em] text-secondary/45">
+            Profile
+          </p>
+          <h1 className="mt-3 text-3xl font-black">Account Settings</h1>
 
-		window.location.reload();
-	}
+          <div className="mt-8 flex items-center gap-4">
+            <img
+              referrerPolicy="no-referrer"
+              src={existingImageUrl || "/logo.png"}
+              alt="Profile"
+              className="h-20 w-20 rounded-full object-cover ring-2 ring-accent/30"
+            />
+            <div className="text-sm text-secondary/65">
+              Update your name and image without changing backend logic.
+            </div>
+          </div>
 
-	return (
-		<div className="w-full min-h-[calc(100vh-100px)] flex justify-center items-center px-4 py-8">
-			<div className="w-full  flex flex-col lg:flex-row gap-6 justify-center ">
-				<div className="min-w-[300px] rounded-lg bg-white shadow-md p-6 flex flex-col gap-4">
-					<h1 className="text-2xl font-bold text-accent text-center">
-						Account Settings
-					</h1>
-					<input
-						value={firstName}
-						onChange={(e) => {
-							setFirstName(e.target.value);
-						}}
-						className="w-full h-[50px] p-3 border border-secondary rounded-lg"
-						placeholder="First Name"
-					/>
-					<input
-						value={lastName}
-						onChange={(e) => {
-							setLastName(e.target.value);
-						}}
-						className="w-full h-[50px] p-3 border border-secondary rounded-lg"
-						placeholder="Last Name"
-					/>
-					<input
-						type="file"
-						onChange={(e) => {
-							setFile(e.target.files[0]);
-						}}
-						className="w-full h-[50px] p-3 border border-secondary rounded-lg"
-						placeholder="Profile Picture"
-					/>
-					<button
-						className="w-full h-[50px] bg-accent text-white rounded-lg mt-2"
-						onClick={updateProfile}
-					>
-						Update Profile
-					</button>
-				</div>
-				<div className="min-w-[300px] rounded-lg bg-white shadow-md p-6 flex flex-col gap-4">
-					<h1 className="text-2xl font-bold text-accent text-center">
-						Change Password
-					</h1>
-					<input
-						type="password"
-						value={password}
-						onChange={(e) => {
-							setPassword(e.target.value);
-						}}
-						className="w-full h-[50px] p-3 border border-secondary rounded-lg"
-						placeholder="New Password"
-					/>
-					<input
-						type="password"
-						value={confirmPassword}
-						onChange={(e) => {
-							setConfirmPassword(e.target.value);
-						}}
-						className="w-full h-[50px] p-3 border border-secondary rounded-lg"
-						placeholder="Confirm New Password"
-					/>
-					<button
-						className="w-full h-[50px] bg-accent text-white rounded-lg mt-2"
-						onClick={changePassword}
-					>
-						Change Password
-					</button>
-				</div>
-			</div>
-		</div>
-	);
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            <Field label="First Name" value={firstName} onChange={setFirstName} />
+            <Field label="Last Name" value={lastName} onChange={setLastName} />
+
+            <label className="block md:col-span-2">
+              <span className="mb-2 block text-sm text-secondary/70">
+                Profile Image
+              </span>
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                className="w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 outline-none transition-all duration-300 hover:border-white/20 hover:bg-white/8"
+              />
+            </label>
+          </div>
+
+          <button
+            className="mt-6 rounded-2xl bg-accent px-5 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-[0_10px_25px_rgba(59,130,246,0.35)] active:scale-[0.98]"
+            onClick={updateProfile}
+          >
+            Update Profile
+          </button>
+        </div>
+
+        <div className="rounded-[32px] glass p-6 md:p-8">
+          <p className="text-sm uppercase tracking-[0.25em] text-secondary/45">
+            Security
+          </p>
+          <h2 className="mt-3 text-3xl font-black">Change Password</h2>
+
+          <div className="mt-8 grid gap-4">
+            <Field
+              type="password"
+              label="New Password"
+              value={password}
+              onChange={setPassword}
+            />
+            <Field
+              type="password"
+              label="Confirm New Password"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+            />
+          </div>
+
+          <button
+            className="mt-6 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-slate-900 hover:shadow-[0_10px_24px_rgba(255,255,255,0.14)] active:scale-[0.98]"
+            onClick={changePassword}
+          >
+            Change Password
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, value, onChange, type = "text" }) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm text-secondary/70">{label}</span>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 outline-none transition-all duration-300 hover:border-white/20 hover:bg-white/8 focus:border-accent"
+      />
+    </label>
+  );
 }

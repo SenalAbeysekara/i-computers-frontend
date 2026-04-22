@@ -2,56 +2,45 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { CiTrash } from "react-icons/ci";
+import { AlertTriangle, X } from "lucide-react";
 
-export default function DeleteModal(props){
-    const [isVisible, setIsVisible] = useState(false)
+export default function DeleteModal({ product, setLoading }) {
+  const [isVisible, setIsVisible] = useState(false);
 
-    const product = props.product;
-    const setLoading = props.setLoading;
-
-    return(
-        <div>
-           <CiTrash onClick={()=>{setIsVisible(true)}} className="hover:text-red-600 cursor-pointer" />
-           {
-            isVisible && (
-                <div className="fixed z-100 bg-black/50 w-screen h-screen top-0 left-0 flex justify-center items-center">
-                    <div className="w-[400px] bg-white h-[200px] relative">
-                        <button onClick={()=>{setIsVisible(false)}} className="w-[40px] h-[40px]  text-red-600 absolute right-0 text-sm font-bold hover:bg-red-600 hover:text-white cursor-pointer" >
-                            X
-                        </button>
-                        <h1 className="text-lg font-semibold text-center mt-10">Are you sure you want to delete the product with product id {product.productId}?</h1>
-                        <div className="flex text-sm justify-center items-center gap-5 mt-10">
-                            <button
-                                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-                                onClick={
-                                    ()=>{
-                                        const token = localStorage.getItem("token");
-
-                                        axios.delete(import.meta.env.VITE_API_URL + "/products/" + product.productId, {
-                                            headers: {
-                                                Authorization: `Bearer ${token}`
-                                            }
-                                        }).then(()=>{                                            
-                                            setIsVisible(false);
-                                            toast.success("Product deleted successfully");
-                                            setLoading(true);
-                                        }).catch((error)=>{
-                                            toast.error(error?.response?.data?.message || "Failed to delete the product. Please try again.");
-                                            setIsVisible(false);
-                                        })
-                                    }
-                                }
-                            >Delete </button>
-                            <button
-                                className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
-                                onClick={()=>{setIsVisible(false)}}
-                            >Cancel</button>
-                        </div>
-                        
-                    </div>
-                </div>
-            )
-           }
+  return (
+    <div>
+      <button onClick={() => setIsVisible(true)} className="rounded-xl border border-white/10 p-2 text-secondary/80 transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-300">
+        <CiTrash />
+      </button>
+      {isVisible && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-md rounded-[32px] border border-white/10 bg-surface p-6 shadow-2xl">
+            <button onClick={() => setIsVisible(false)} className="absolute right-4 top-4 rounded-full border border-white/10 p-2 text-secondary/70 transition hover:bg-white/5 hover:text-white">
+              <X className="h-4 w-4" />
+            </button>
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/12 text-red-300">
+              <AlertTriangle className="h-6 w-6" />
+            </div>
+            <h2 className="text-2xl font-semibold">Delete product?</h2>
+            <p className="mt-3 text-secondary/65">This will remove <span className="font-semibold text-white">{product.productId}</span> from your catalog. This action cannot be undone.</p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button className="rounded-2xl border border-white/10 px-4 py-2 text-secondary/80 transition hover:bg-white/5" onClick={() => setIsVisible(false)}>Cancel</button>
+              <button className="rounded-2xl bg-red-600 px-4 py-2 font-semibold text-white transition hover:bg-red-500" onClick={async () => {
+                try {
+                  const token = localStorage.getItem("token");
+                  await axios.delete(`${import.meta.env.VITE_API_URL}/products/${product.productId}`, { headers: { Authorization: `Bearer ${token}` } });
+                  setIsVisible(false);
+                  toast.success("Product deleted successfully");
+                  setLoading(true);
+                } catch (error) {
+                  toast.error(error?.response?.data?.message || "Failed to delete the product. Please try again.");
+                  setIsVisible(false);
+                }
+              }}>Delete</button>
+            </div>
+          </div>
         </div>
-    )
+      )}
+    </div>
+  );
 }

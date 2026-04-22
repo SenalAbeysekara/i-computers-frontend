@@ -1,90 +1,113 @@
-import { useState } from "react"
-import {  getCartTotal } from "../utils/cart"
-import { BiMinus, BiPlus } from "react-icons/bi"
-import getFormattedPrice from "../utils/price-format"
+import { useMemo, useState } from "react";
+import { getCart, getCartTotal } from "../utils/cart";
+import getFormattedPrice from "../utils/price-format";
 import { useLocation, useNavigate } from "react-router-dom";
 import CheckOutDetailsModal from "../components/checkoutDetailsModal";
+import { CreditCard } from "lucide-react";
 
+export default function Checkout() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [cart] = useState(location.state || getCart());
 
-export default function Checkout(){
-    const location = useLocation();
-    const [cart , setCart] = useState(location.state || [])
-    
-    const navigate = useNavigate();
+  const total = useMemo(() => getCartTotal(cart), [cart]);
+  const itemCount = useMemo(
+    () => cart.reduce((sum, item) => sum + item.qty, 0),
+    [cart]
+  );
 
-    if(location.state == null){
-        navigate("/products")
-    }
-    
+  if (!cart || cart.length === 0) {
+    navigate("/products");
+    return null;
+  }
 
+  return (
+    <div className="section-shell py-10">
+      <div className="mb-8">
+        <h1 className="text-4xl font-black">Checkout</h1>
+        <p className="mt-3 text-secondary/65">
+          Confirm the selected items and continue with delivery details.
+        </p>
+      </div>
 
-    return(
-        <div className="w-full h-[calc(100vh-100px)] overflow-y-scroll ">
-
-            <div className="w-full  flex justify-center items-center flex-col gap-4 p-5">
-                {
-                    cart.map(
-                        (cartItem , index)=>{
-                            return(
-                                <div key={index} className="lg:w-[600px] w-full lg:h-[150px] bg-white flex flex-row rounded-lg shadow overflow-hidden">
-                                    <img className="h-[150px] aspect-square object-cover" src={cartItem.product.image} alt={cartItem.name} />
-                                    <div className="h-full w-[280px] p-4 flex flex-col  overflow-hidden  justify-between">
-                                        <p className="text-xs text-gray-500">{cartItem.product.productId}</p>
-                                        <h1 className="text-xl font-bold">{cartItem.product.name}</h1>
-                                        <div className="lg:w-[210px]  h-[50px] border border-accent rounded-full flex overflow-hidden justify-center">
-                                            <button onClick={
-                                                ()=>{
-                                                    
-                                                    const newCart = [...cart]
-
-                                                    newCart[index].qty = newCart[index].qty - 1
-                                                    if(newCart[index].qty<=0){
-                                                        newCart.splice(index,1)
-                                                    }
-                                                    setCart(newCart)
-
-                                                }
-                                            } className="lg:w-[70px] h-full flex justify-center items-center  text-2xl font-bold text-gray-700 hover:bg-accent">
-                                                <BiMinus/>
-                                            </button>
-                                            <span className="lg:w-[70px] h-full flex justify-center items-center  text-lg font-bold text-gray-700">
-                                                {cartItem.qty}
-                                            </span>
-                                            <button onClick={
-                                                ()=>{
-                                                    
-                                                    const newCart = [...cart]
-
-                                                    newCart[index].qty = newCart[index].qty + 1
-
-                                                    setCart(newCart)
-
-                                                }
-                                            } className="lg:w-[70px] h-full flex justify-center items-center  text-2xl font-bold text-gray-700 hover:bg-accent">
-                                                <BiPlus/>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="w-[170px] h-full  flex flex-col justify-center items-end pr-2">
-                                        
-                                        {
-                                            cartItem.product.labelledPrice>cartItem.product.price && (
-                                                <span className="text-sm text-gray-500 line-through">{getFormattedPrice(cartItem.product.labelledPrice)}</span>
-                                            )
-                                        }
-                                        <span className="text-sm text-secondary font-semibold">{getFormattedPrice(cartItem.product.price)}</span>
-                                        <span className="text-lg text-secondary font-bold">{getFormattedPrice(cartItem.product.price * cartItem.qty)}</span>
-                                    </div>
-                                </div>
-                            )
-                        }
-                    )
-                }
-                <div className="bg-white lg:w-[600px] w-full h-[100px] sticky bottom-0 rounded-xl shadow flex items-center">
-                    <CheckOutDetailsModal cart={cart} />
-                    <span className="text-xl font-bold text-secondary absolute right-5 border-b-4  border-double">{getFormattedPrice(getCartTotal(cart))}</span>
+      <div className="grid items-start gap-8 lg:grid-cols-[1fr_360px]">
+        <div className="space-y-4">
+          {cart.map((cartItem, index) => (
+            <div
+              key={index}
+              className="rounded-[28px] border border-white/10 bg-gradient-to-br from-[#131f35] via-[#111b2f] to-[#0c1526] p-4 shadow-xl shadow-black/10 md:p-5"
+            >
+              <div className="flex flex-col gap-4 md:flex-row md:items-center">
+                <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[24px] border border-white/10 bg-[#eef2f7] p-3">
+                  <img
+                    className="h-full w-full object-contain"
+                    src={cartItem.product.image}
+                    alt={cartItem.product.name}
+                  />
                 </div>
-            </div>            
+
+                <div className="flex-1">
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-secondary/45">
+                    {cartItem.product.productId}
+                  </p>
+                  <h2 className="mt-2 text-[20px] font-semibold leading-tight text-white">
+                    {cartItem.product.name}
+                  </h2>
+                  <p className="mt-3 text-[15px] text-secondary/65">
+                    Qty: {cartItem.qty}
+                  </p>
+                </div>
+
+                <p className="text-[18px] font-semibold text-white md:text-right">
+                  {getFormattedPrice(cartItem.product.price * cartItem.qty)}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
-    )
+
+        <div className="rounded-[30px] border border-white/10 bg-gradient-to-br from-[#131f35] via-[#111b2f] to-[#0c1526] p-6 shadow-2xl shadow-black/15">
+          <div className="flex items-center gap-3">
+            <div className="rounded-2xl bg-white/5 p-3">
+              <CreditCard className="h-5 w-5 text-accent" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black">Payment Summary</h2>
+              <p className="text-sm text-secondary/55">
+                Review before placing your order
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 space-y-4">
+            <div className="flex items-center justify-between text-secondary/65">
+              <span>Items</span>
+              <span>{itemCount}</span>
+            </div>
+
+            <div className="flex items-center justify-between text-secondary/65">
+              <span>Subtotal</span>
+              <span>{getFormattedPrice(total)}</span>
+            </div>
+
+            <div className="flex items-center justify-between text-secondary/65">
+              <span>Delivery</span>
+              <span>Calculated offline</span>
+            </div>
+
+            <div className="border-t border-white/10 pt-4">
+              <div className="flex items-center justify-between text-[18px] font-semibold text-white">
+                <span>Total</span>
+                <span>{getFormattedPrice(total)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <CheckOutDetailsModal cart={cart} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
