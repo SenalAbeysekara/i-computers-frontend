@@ -1,252 +1,157 @@
-import {
-  Menu,
-  ShoppingCart,
-  X,
-  Search,
-  ShieldCheck,
-  Home,
-  PackageSearch,
-  Info,
-  Phone,
-  FileText,
-  ScrollText,
-  ChevronRight,
-  Headphones,
-} from "lucide-react";
-import { Link, NavLink } from "react-router-dom";
-import UserData from "./userData";
-import { useEffect, useState } from "react";
-import { getCart } from "../utils/cart";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
-const navLinks = [
-  { to: "/", label: "Home", icon: Home },
-  { to: "/products", label: "Products", icon: PackageSearch },
-  { to: "/about", label: "About", icon: Info },
-  { to: "/contact", label: "Contact", icon: Phone },
+const slides = [
+  {
+    image: "/slider/slide-1.png",
+    title: "Upgrade your setup with better tech.",
+    highlight: "Modern laptops and accessories",
+    description:
+      "Discover sleek laptops, reliable accessories, and a premium shopping experience designed to feel fast, simple, and clean.",
+    primaryCta: { label: "Shop Laptops", to: "/products" },
+    secondaryCta: { label: "Contact Us", to: "/contact" },
+    imageClass: "object-cover object-center scale-100",
+  },
+  {
+    image: "/slider/slide-2.png",
+    title: "Powerful desktop setups for every desk.",
+    highlight: "Gaming and productivity PCs",
+    description:
+      "Find desktop PCs, monitors, and peripherals that look premium, perform smoothly, and fit your daily workflow or gaming needs.",
+    primaryCta: { label: "Browse Products", to: "/products" },
+    secondaryCta: { label: "About Store", to: "/about" },
+    imageClass: "object-cover object-center scale-100",
+  },
+  {
+    image: "/slider/slide-3.png",
+    title: "Complete your build with trusted components.",
+    highlight: "GPUs, motherboards, SSDs, and more",
+    description:
+      "Shop the parts and accessories you need in one place, with a cleaner storefront and a modern premium look.",
+    primaryCta: { label: "View Components", to: "/products" },
+    secondaryCta: { label: "Get Support", to: "/contact" },
+    imageClass: "object-cover object-center scale-100",
+  },
 ];
 
-const mobileExtraLinks = [
-  { to: "/cart", label: "Cart", icon: ShoppingCart },
-  { to: "/privacy-policy", label: "Privacy Policy", icon: FileText },
-  { to: "/terms-and-conditions", label: "Terms & Conditions", icon: ScrollText },
-];
-
-export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+export default function HeroSlider() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeSlide = useMemo(() => slides[activeIndex], [activeIndex]);
 
   useEffect(() => {
-    function updateCartCount() {
-      const cart = getCart();
-      const count = cart.reduce((sum, item) => sum + item.qty, 0);
-      setCartCount(count);
-    }
+    const interval = setInterval(() => {
+      setActiveIndex((current) => (current + 1) % slides.length);
+    }, 5000);
 
-    updateCartCount();
-
-    window.addEventListener("cartUpdated", updateCartCount);
-    window.addEventListener("storage", updateCartCount);
-
-    return () => {
-      window.removeEventListener("cartUpdated", updateCartCount);
-      window.removeEventListener("storage", updateCartCount);
-    };
+    return () => clearInterval(interval);
   }, []);
 
-  const linkClasses = ({ isActive }) =>
-    `relative rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
-      isActive
-        ? "bg-white/10 text-white shadow-[0_0_0_1px_rgba(59,130,246,0.25)]"
-        : "text-secondary/75 hover:-translate-y-0.5 hover:bg-white/8 hover:text-white hover:shadow-[0_8px_24px_rgba(59,130,246,0.12)]"
-    }`;
+  function goToPrevious() {
+    setActiveIndex((current) => (current - 1 + slides.length) % slides.length);
+  }
 
-  const mobileLinkClasses = ({ isActive }) =>
-    `group flex items-center justify-between rounded-2xl border px-3.5 py-3 text-sm font-semibold transition-all duration-300 ${
-      isActive
-        ? "border-blue-400/30 bg-blue-500/15 text-white shadow-[0_10px_30px_rgba(59,130,246,0.14)]"
-        : "border-white/10 bg-white/[0.055] text-secondary/85 hover:border-blue-400/25 hover:bg-white/[0.09] hover:text-white"
-    }`;
+  function goToNext() {
+    setActiveIndex((current) => (current + 1) % slides.length);
+  }
 
   return (
-    <>
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-primary/90 backdrop-blur-xl">
-        <div className="section-shell flex h-[84px] items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-4">
-            <button
-              type="button"
-              onClick={() => setIsOpen(true)}
-              className="shrink-0 rounded-xl border border-white/10 p-2 text-secondary/80 transition-all duration-300 hover:bg-white/8 hover:text-white lg:hidden"
-              aria-label="Open menu"
+    <section className="section-shell pb-12 pt-10 md:pt-14">
+      <div className="relative overflow-hidden rounded-[36px] border border-white/12 bg-gradient-to-br from-[#0d1f3a] via-[#0a1730] to-[#081425] shadow-[0_24px_80px_rgba(2,8,23,0.55),0_0_0_1px_rgba(255,255,255,0.04),0_0_60px_rgba(59,130,246,0.12)]">
+        <div className="pointer-events-none absolute inset-0 rounded-[36px] ring-1 ring-white/8" />
+        <div className="pointer-events-none absolute inset-x-10 top-0 h-24 bg-gradient-to-b from-white/6 to-transparent blur-2xl" />
+        <div className="pointer-events-none absolute -left-16 top-16 h-56 w-56 rounded-full bg-blue-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-16 bottom-10 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl" />
+
+        <div className="absolute inset-0">
+          {slides.map((slide, index) => (
+            <div
+              key={slide.image}
+              className={`absolute inset-0 transition-opacity duration-700 ${index === activeIndex ? "opacity-100" : "opacity-0"
+                }`}
             >
-              <Menu className="h-5 w-5" />
-            </button>
-
-            <Link to="/" className="flex min-w-0 items-center gap-3">
-              <div className="flex flex-col items-start justify-center leading-tight">
-                <img
-                  src="/logo.png"
-                  alt="Isuri Computer"
-                  className="h-9 w-auto object-contain md:h-10 lg:h-10"
-                />
-
-                <p className="mt-0.5 flex items-center gap-1.5 pl-0.5 text-[12px] font-medium text-secondary/60">
-                  <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-accent" />
-                  Premium computer store
-                </p>
-              </div>
-            </Link>
-          </div>
-
-          <nav className="hidden items-center gap-3 lg:flex">
-            {navLinks.map((item) => (
-              <NavLink key={item.to} to={item.to} className={linkClasses}>
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-
-          <div className="flex shrink-0 items-center gap-2 md:gap-3">
-            <Link
-              to="/products"
-              className="hidden items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-secondary/75 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/8 hover:text-white hover:shadow-[0_8px_24px_rgba(59,130,246,0.12)] md:flex"
-            >
-              <Search className="h-4 w-4" />
-              Browse
-            </Link>
-
-            <Link
-              to="/cart"
-              className="relative rounded-full border border-white/12 p-2.5 text-secondary/80 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/8 hover:text-white hover:shadow-[0_8px_24px_rgba(59,130,246,0.12)]"
-              aria-label="Cart"
-            >
-              <ShoppingCart className="h-5 w-5" />
-
-              {cartCount > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[11px] font-bold text-white shadow-lg shadow-blue-500/30">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
-
-            <UserData />
-          </div>
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className={`h-full w-full transition-transform duration-700 ${slide.imageClass}`}
+              />
+            </div>
+          ))}
         </div>
-      </header>
 
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm lg:hidden"
-          onClick={() => setIsOpen(false)}
-        >
-          <aside
-            className="flex h-dvh w-[min(76vw,320px)] flex-col overflow-y-auto border-r border-white/10 bg-[#07111f] p-4 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-5 rounded-3xl border border-white/10 bg-white/[0.045] p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
-                  <img
-                    src="/logo.png"
-                    alt="Isuri Computer"
-                    className="h-9 w-auto object-contain"
-                  />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#03101e]/90 via-[#061423]/70 to-[#0b1830]/28" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07111f]/88 via-transparent to-transparent" />
 
-                  <p className="mt-2 flex items-center gap-1.5 text-[11px] font-medium text-secondary/65">
-                    <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-accent" />
-                    Premium computer store
-                  </p>
-                </div>
+        <div className="relative z-10 flex min-h-[440px] items-start px-6 pb-20 pt-14 md:min-h-[470px] md:px-10 md:pb-24 md:pt-16 lg:min-h-[490px] lg:px-14 lg:pb-28 lg:pt-20">
+          <div className="max-w-2xl">
+            <h1 className="text-4xl font-black leading-tight md:text-6xl">
+              {activeSlide.title}
+            </h1>
 
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="shrink-0 rounded-xl border border-white/10 p-2 text-white transition-all duration-300 hover:bg-white/10"
-                  aria-label="Close menu"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
+            <p className="mt-5 bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-xl font-semibold text-transparent md:text-2xl">
+              {activeSlide.highlight}
+            </p>
 
-            <div className="space-y-2.5">
-              {navLinks.map((item) => {
-                const Icon = item.icon;
+            <p className="mt-6 max-w-xl text-base leading-8 text-secondary/75 md:text-lg">
+              {activeSlide.description}
+            </p>
 
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    onClick={() => setIsOpen(false)}
-                    className={mobileLinkClasses}
-                  >
-                    <span className="flex min-w-0 items-center gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/8 text-accent ring-1 ring-white/10">
-                        <Icon className="h-[18px] w-[18px]" />
-                      </span>
-
-                      <span className="truncate">{item.label}</span>
-                    </span>
-
-                    <ChevronRight className="h-4 w-4 shrink-0 text-secondary/45 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-accent" />
-                  </NavLink>
-                );
-              })}
-
-              <div className="my-4 h-px bg-white/10" />
-
-              {mobileExtraLinks.map((item) => {
-                const Icon = item.icon;
-
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    onClick={() => setIsOpen(false)}
-                    className={mobileLinkClasses}
-                  >
-                    <span className="flex min-w-0 items-center gap-3">
-                      <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/8 text-accent ring-1 ring-white/10">
-                        <Icon className="h-[18px] w-[18px]" />
-
-                        {item.to === "/cart" && cartCount > 0 && (
-                          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[9px] font-bold text-white">
-                            {cartCount}
-                          </span>
-                        )}
-                      </span>
-
-                      <span className="truncate">{item.label}</span>
-                    </span>
-
-                    <ChevronRight className="h-4 w-4 shrink-0 text-secondary/45 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-accent" />
-                  </NavLink>
-                );
-              })}
-            </div>
-
-            <div className="mt-auto pt-5">
+            <div className="mt-10 flex flex-wrap gap-4">
               <Link
-                to="/contact"
-                onClick={() => setIsOpen(false)}
-                className="block rounded-3xl border border-blue-400/20 bg-blue-500/10 p-4 transition-all duration-300 hover:bg-blue-500/15"
+                to={activeSlide.primaryCta.to}
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-[0_10px_25px_rgba(59,130,246,0.35)] active:scale-[0.98]"
               >
-                <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-500/20 text-accent ring-1 ring-blue-400/20">
-                    <Headphones className="h-5 w-5" />
-                  </span>
+                {activeSlide.primaryCta.label}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
 
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-white">Need help?</p>
-                    <p className="mt-0.5 text-xs text-secondary/65">
-                      Contact our support team
-                    </p>
-                  </div>
-                </div>
+              <Link
+                to={activeSlide.secondaryCta.to}
+                className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-white hover:bg-white hover:shadow-[0_10px_24px_rgba(255,255,255,0.18)] active:scale-[0.98]"
+              >
+                <span className="text-white transition-colors duration-300 group-hover:text-slate-900">
+                  {activeSlide.secondaryCta.label}
+                </span>
               </Link>
             </div>
-          </aside>
+          </div>
         </div>
-      )}
-    </>
+
+        <div className="absolute bottom-5 left-6 right-6 z-20 flex items-center justify-between md:left-10 md:right-10 lg:left-14 lg:right-14">
+          <div className="flex items-center gap-2">
+            {slides.map((slide, index) => (
+              <button
+                key={slide.image}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Go to slide ${index + 1}`}
+                className={`h-2.5 rounded-full transition-all duration-300 ${index === activeIndex
+                  ? "w-10 bg-accent"
+                  : "w-2.5 bg-white/45 hover:bg-white/70"
+                  }`}
+              />
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={goToPrevious}
+              className="rounded-full border border-white/15 bg-black/30 p-3 text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-white/10 hover:text-accent hover:shadow-[0_10px_24px_rgba(59,130,246,0.18)] active:scale-[0.98]"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+
+            <button
+              type="button"
+              onClick={goToNext}
+              className="rounded-full border border-white/15 bg-black/30 p-3 text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-white/10 hover:text-accent hover:shadow-[0_10px_24px_rgba(59,130,246,0.18)] active:scale-[0.98]"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
